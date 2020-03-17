@@ -1,12 +1,12 @@
 package locusway.overloadedarmorbar.overlay;
 
+import locusway.overloadedarmorbar.ConfigurationHandler;
+
 /*
     Class manages the calculations required to determine the correct color(s) to use
  */
 public class ArmorBar
 {
-	static String[] colorValues = new String[]{ "#FFFFFF", "#FF5500", "#FFC747", "#27FFE3", "#00FF00", "#7F00FF"};
-	
     private static void setArmorIconColor(ArmorIcon icon, String[] colors, int scale, int armorValue)
     {
         int currentScale = scale;
@@ -70,7 +70,7 @@ public class ArmorBar
         for (int i = 0; i < 10; i++)
         {
             armorIcons[i] = new ArmorIcon();
-            setArmorIconColor(armorIcons[i], colorValues, scale, counter);
+            setArmorIconColor(armorIcons[i], ConfigurationHandler.colorValues, scale, counter);
             if (counter >= 2)
             {
                 //We have at least a full icon to show
