@@ -1,4 +1,4 @@
-package locusway.overpoweredarmorbar.overlay;
+package locusway.overloadedarmorbar.overlay;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,7 +11,7 @@ public class ArmorIconColor
     public float Red;
     public float Blue;
     public float Green;
-    public float Alpha;
+    public final float Alpha;
     public static final Pattern pattern = Pattern.compile("^#[0-9A-Fa-f]{6}$");
 
     public ArmorIconColor()
@@ -21,7 +21,7 @@ public class ArmorIconColor
 
     /*
         Convert from #RRGGBB format.
-        If string is not in correct format this function will set the color to black
+        If string is not in correct format this function will set the color to black.
      */
     public void setColorFromHex(String colorHex)
     {

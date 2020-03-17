@@ -1,27 +1,25 @@
-package locusway.overpoweredarmorbar.overlay;
-
-import locusway.overpoweredarmorbar.Configs;
-
-import java.util.List;
+package locusway.overloadedarmorbar.overlay;
 
 /*
     Class manages the calculations required to determine the correct color(s) to use
  */
 public class ArmorBar
 {
-    private static void setArmorIconColor(ArmorIcon icon, List<? extends String> colors, int scale, int armorValue)
+	static String[] colorValues = new String[]{ "#FFFFFF", "#FF5500", "#FFC747", "#27FFE3", "#00FF00", "#7F00FF"};
+	
+    private static void setArmorIconColor(ArmorIcon icon, String[] colors, int scale, int armorValue)
     {
         int currentScale = scale;
         int previousScale = scale - 1;
 
         //Force last color if we have run out of colors on the list
-        if (currentScale > colors.size() - 1)
+        if (currentScale > colors.length - 1)
         {
-            currentScale = colors.size() - 1;
+            currentScale = colors.length - 1;
         }
-        if (previousScale > colors.size() - 1)
+        if (previousScale > colors.length - 1)
         {
-            previousScale = colors.size() - 1;
+            previousScale = colors.length - 1;
         }
 
         //Previous scale is -1 between 0 and 20 points of armor, so reset to 0 for sane value
@@ -34,20 +32,20 @@ public class ArmorBar
         if (armorValue >= 1)
         {
             //Should be current tier color
-            icon.primaryArmorIconColor.setColorFromHex(colors.get(currentScale));
+            icon.primaryArmorIconColor.setColorFromHex(colors[currentScale]);
         }
 
         //Covers 1 (HALF) - Secondary Color
         if (armorValue == 1)
         {
             //Should be previous tier color
-            icon.secondaryArmorIconColor.setColorFromHex(colors.get(previousScale));
+            icon.secondaryArmorIconColor.setColorFromHex(colors[previousScale]);
         }
 
         if (armorValue == 0)
         {
             //Should be previous tier color
-            icon.primaryArmorIconColor.setColorFromHex(colors.get(previousScale));
+            icon.primaryArmorIconColor.setColorFromHex(colors[previousScale]);
         }
     }
 
@@ -72,7 +70,7 @@ public class ArmorBar
         for (int i = 0; i < 10; i++)
         {
             armorIcons[i] = new ArmorIcon();
-            setArmorIconColor(armorIcons[i], Configs.ClientConfig.colorValues.get(), scale, counter);
+            setArmorIconColor(armorIcons[i], colorValues, scale, counter);
             if (counter >= 2)
             {
                 //We have at least a full icon to show
