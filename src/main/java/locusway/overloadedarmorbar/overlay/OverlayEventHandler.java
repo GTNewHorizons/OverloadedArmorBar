@@ -1,7 +1,7 @@
 package locusway.overloadedarmorbar.overlay;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import locusway.overloadedarmorbar.Configs;
+import locusway.overloadedarmorbar.ConfigurationHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -12,7 +12,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.ForgeHooks;
 import org.lwjgl.opengl.GL11;
 
-import static locusway.overloadedarmorbar.Configs.alwaysShowArmorBar;
+import static locusway.overloadedarmorbar.ConfigurationHandler.alwaysShowArmorBar;
 /*
     Class which handles the render event and hides the vanilla armor bar
  */
@@ -60,12 +60,12 @@ public class OverlayEventHandler {
 		float playerHealth = (float) playerHealthAttribute.getAttributeValue();
 
 		//Fake that the player health only goes up to 20 so that it does not make the bar float above the health bar
-		if (!Configs.offset && playerHealth > 20) playerHealth = 20;
+		if (!ConfigurationHandler.offset && playerHealth > 20) playerHealth = 20;
 
 		float absorptionAmount = MathHelper.ceiling_float_int(player.getAbsorptionAmount());
 
 		//Clamp the absorption value to 20 so that it doesn't make the bar float above the health bar
-		if (!Configs.offset && absorptionAmount > 20) absorptionAmount = 20;
+		if (!ConfigurationHandler.offset && absorptionAmount > 20) absorptionAmount = 20;
 
 		int numberOfHealthBars = (int) Math.ceil(playerHealth / 20) + (int) Math.ceil(absorptionAmount / 20);
 		int i2 = Math.max(10 - (numberOfHealthBars - 2), 3);
@@ -94,7 +94,7 @@ public class OverlayEventHandler {
 						//Draw the full icon as we have wrapped
 						drawTexturedModalRect(xPosition, yPosition , 34, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
 					} else {
-						if (Configs.showEmptyArmorIcons && (alwaysShowArmorBar || currentArmorValue > 0)) {
+						if (ConfigurationHandler.showEmptyArmorIcons && (alwaysShowArmorBar || currentArmorValue > 0)) {
 							//Draw the empty armor icon
 							drawTexturedModalRect(xPosition, yPosition, 16, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
 						}
