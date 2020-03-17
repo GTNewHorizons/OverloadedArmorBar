@@ -1,0 +1,16 @@
+[
+{
+  "modid": "overloadedarmorbar",
+  "name": "Overloaded Armor Bar",
+  "description": "This mod allows armor values over 20 to be displayed as different colored",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://github.com/Tfarcenim/OverloadedArmorBar",
+  "updateUrl": "",
+  "authors": ["Tfarcenim"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

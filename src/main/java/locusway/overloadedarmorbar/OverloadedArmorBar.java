@@ -6,12 +6,13 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import locusway.overloadedarmorbar.overlay.OverlayEventHandler;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = OverloadedArmorBar.MODID, name = OverloadedArmorBar.MODNAME, version = OverloadedArmorBar.MODVERSION, useMetadata = true)
+@Mod(modid = OverloadedArmorBar.MODID, name = OverloadedArmorBar.MODNAME, version = OverloadedArmorBar.MODVERSION, useMetadata = true, guiFactory = OverloadedArmorBar.GUI_FACTORY_CLASS)
 public class OverloadedArmorBar {
 
   public static final String MODID = "overloadedarmorbar";
   public static final String MODNAME = "Overloaded Armor Bar";
-  public static final String MODVERSION = "@VERSION@";
+  public static final String MODVERSION = "1.7.10-1.0.0";
+  public static final String GUI_FACTORY_CLASS = "locusway.overloadedarmorbar.client.gui.GuiFactory";
   public static org.apache.logging.log4j.Logger logger;
 
   @Mod.EventHandler
