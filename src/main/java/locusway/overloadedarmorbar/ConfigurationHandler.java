@@ -23,10 +23,10 @@ public class ConfigurationHandler {
     }
 
     private static void loadConfiguration() {
-        alwaysShowArmorBar=config.get(Configuration.CATEGORY_GENERAL, "Always show armor bar?", alwaysShowArmorBar).getBoolean();
-        colorValues=config.get(Configuration.CATEGORY_GENERAL, "Armor Icon Colors", colorValues, "Colors must be specified in #RRGGBB format").getStringList();
-        offset=config.get(Configuration.CATEGORY_GENERAL, "Override for Armor shift", offset, "Set to true if the armor bar display's incorrectly").getBoolean();
-        showEmptyArmorIcons=config.get(Configuration.CATEGORY_GENERAL, "Show empty armor icons?", showEmptyArmorIcons).getBoolean();
+        alwaysShowArmorBar=config.getBoolean("Always Show armor bar?", Configuration.CATEGORY_GENERAL, false, "Always show armor bar" );
+        colorValues=config.getStringList("Armor Icon Colors", Configuration.CATEGORY_GENERAL, new String[]{"#FFFFFF", "#FF5500", "#FFC747", "#27FFE3", "#00FF00", "#7F00FF"} , "Colors must be specified in #RRGGBB format");
+        offset=config.getBoolean("Override for Armor shift", Configuration.CATEGORY_GENERAL, false,"Set to true if the armor bar display's incorrectly");
+        showEmptyArmorIcons=config.getBoolean("Show empty armor icons?", Configuration.CATEGORY_GENERAL, false, "Show empty armor icons");
 
         if(config.hasChanged())
             config.save();
