@@ -13,12 +13,12 @@ public class ArmorIcon
         Type = HALF:
             The color of the left-hand side of the icon
      */
-    public ArmorIconColor primaryArmorIconColor;
+    public final ArmorIconColor primaryArmorIconColor;
     /*
         Type = HALF:
             The color of the right-hand side of the icon
      */
-    public ArmorIconColor secondaryArmorIconColor;
+    public final ArmorIconColor secondaryArmorIconColor;
 
 
     public ArmorIcon()

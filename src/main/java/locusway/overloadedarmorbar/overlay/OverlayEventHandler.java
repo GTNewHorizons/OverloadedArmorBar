@@ -31,7 +31,7 @@ public class OverlayEventHandler {
 	private final static int ARMOR_ICON_SIZE = 9;
 	private final static int ARMOR_SECOND_HALF_ICON_SIZE = 4;
 
-	private Minecraft mc = Minecraft.getMinecraft();
+	private final Minecraft mc = Minecraft.getMinecraft();
 	private ArmorIcon[] armorIcons;
 
 	@SubscribeEvent(receiveCanceled = true)

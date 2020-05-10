@@ -17,13 +17,26 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-1.0.0-beta5"
+ext.configFile = file "build.properties"
+configFile.withReader {
+    // Load config. It shall from now be referenced as simply config or project.config
+    def prop =  new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+}
+
+version = config.minecraft_version + "-" + config.mod_version
 group= "locusway.overloadedarmorbar"
 archivesBaseName = "overloadedarmorbar"
 
 minecraft {
-    version = "1.7.10-10.13.4.1614-1.7.10"
-    runDir = "eclipse"
+    version = config.minecraft_version + "-" + config.forge_version
+    runDir = "run"
+
+    replace "\${version}", project.version
+    replace "\${mcversion}", version
+    replace "(gradle_replace_mcversion,)", "[" + version + "]"
+    replace "(gradle_replace_forgeversion,)", "[" + config.forge_version + ",)"
 }
 
 dependencies {
