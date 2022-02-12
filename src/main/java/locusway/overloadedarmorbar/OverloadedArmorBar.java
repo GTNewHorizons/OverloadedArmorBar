@@ -11,7 +11,7 @@ public class OverloadedArmorBar {
 
   public static final String MODID = "overloadedarmorbar";
   public static final String MODNAME = "Overloaded Armor Bar";
-  public static final String VERSION = "${version}";
+  public static final String VERSION = "GRADLETOKEN_VERSION";
   public static final String GUI_FACTORY_CLASS = "locusway.overloadedarmorbar.client.gui.GuiFactory";
 
   public static org.apache.logging.log4j.Logger logger;
