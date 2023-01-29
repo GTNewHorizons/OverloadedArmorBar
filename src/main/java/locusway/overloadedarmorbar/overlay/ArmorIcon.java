@@ -1,38 +1,31 @@
 package locusway.overloadedarmorbar.overlay;
 
 /*
-    Class wraps the information required to draw an individual armor icon
+ * Class wraps the information required to draw an individual armor icon
  */
-public class ArmorIcon
-{
+public class ArmorIcon {
+
     public Type armorIconType;
 
     /*
-        Type = FULL, Type = NONE:
-            The color of the icon
-        Type = HALF:
-            The color of the left-hand side of the icon
+     * Type = FULL, Type = NONE: The color of the icon Type = HALF: The color of the left-hand side of the icon
      */
     public final ArmorIconColor primaryArmorIconColor;
     /*
-        Type = HALF:
-            The color of the right-hand side of the icon
+     * Type = HALF: The color of the right-hand side of the icon
      */
     public final ArmorIconColor secondaryArmorIconColor;
 
-
-    public ArmorIcon()
-    {
+    public ArmorIcon() {
         armorIconType = Type.NONE;
         primaryArmorIconColor = new ArmorIconColor();
         secondaryArmorIconColor = new ArmorIconColor();
     }
 
     /*
-        The type of armor icon to show.
+     * The type of armor icon to show.
      */
-    public enum Type
-    {
+    public enum Type {
         NONE,
         HALF,
         FULL
