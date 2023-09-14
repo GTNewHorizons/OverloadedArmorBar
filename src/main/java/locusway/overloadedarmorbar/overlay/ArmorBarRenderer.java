@@ -1,11 +1,11 @@
 package locusway.overloadedarmorbar.overlay;
 
-import static locusway.overloadedarmorbar.ConfigurationHandler.alwaysShowArmorBar;
+import static net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType.ARMOR;
 
 import locusway.overloadedarmorbar.ConfigurationHandler;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,48 +15,32 @@ import net.minecraftforge.common.ForgeHooks;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-/*
+/**
  * Class which handles the render event and hides the vanilla armor bar
  */
-public class OverlayEventHandler {
+public class ArmorBarRenderer extends Gui {
 
-    public static void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height) {
-        Minecraft.getMinecraft().ingameGUI.drawTexturedModalRect(x, y, textureX, textureY, width, height);
-    }
-
-    public static final OverlayEventHandler INSTANCE = new OverlayEventHandler();
-
-    private OverlayEventHandler() {}
-
-    // Class handles the drawing of the armor bar
     private final static int UNKNOWN_ARMOR_VALUE = -1;
-    private int previousArmorValue = UNKNOWN_ARMOR_VALUE;
     private final static int ARMOR_ICON_SIZE = 9;
     private final static int ARMOR_SECOND_HALF_ICON_SIZE = 4;
 
+    private int previousArmorValue = UNKNOWN_ARMOR_VALUE;
     private final Minecraft mc = Minecraft.getMinecraft();
     private ArmorIcon[] armorIcons;
 
-    @SubscribeEvent(receiveCanceled = true)
-    public void onRenderGameOverlayEventPre(RenderGameOverlayEvent event) {
-        if (event.type != RenderGameOverlayEvent.ElementType.ARMOR) return;
-        ScaledResolution scale = event.resolution;
-        int scaledWidth = scale.getScaledWidth();
-        int scaledHeight = scale.getScaledHeight();
-        /* Don't render the vanilla armor bar */
+    @SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
+    public void onRenderGameOverlayEvent(RenderGameOverlayEvent.Pre event) {
+        if (event.type != ARMOR) return;
+        renderArmorBar(event.resolution.getScaledWidth(), event.resolution.getScaledHeight());
         event.setCanceled(true);
-        INSTANCE.renderArmorBar(scaledWidth, scaledHeight);
-    }
-
-    private int calculateArmorValue() {
-        return ForgeHooks.getTotalArmorValue(mc.thePlayer);
     }
 
     public void renderArmorBar(int screenWidth, int screenHeight) {
         EntityPlayer player = mc.thePlayer;
-        int currentArmorValue = calculateArmorValue();
+        int currentArmorValue = ForgeHooks.getTotalArmorValue(mc.thePlayer);
         int xStart = screenWidth / 2 - 91;
         int yStart = screenHeight - 39;
 
@@ -96,11 +80,12 @@ public class OverlayEventHandler {
                     GL11.glColor4f(color.Red, color.Green, color.Blue, color.Alpha);
                     if (currentArmorValue > 20) {
                         // Draw the full icon as we have wrapped
-                        drawTexturedModalRect(xPosition, yPosition, 34, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
+                        this.drawTexturedModalRect(xPosition, yPosition, 34, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
                     } else {
-                        if (ConfigurationHandler.showEmptyArmorIcons && (alwaysShowArmorBar || currentArmorValue > 0)) {
+                        if (ConfigurationHandler.showEmptyArmorIcons
+                                && (ConfigurationHandler.alwaysShowArmorBar || currentArmorValue > 0)) {
                             // Draw the empty armor icon
-                            drawTexturedModalRect(xPosition, yPosition, 16, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
+                            this.drawTexturedModalRect(xPosition, yPosition, 16, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
                         }
                     }
                     break;
@@ -109,7 +94,7 @@ public class OverlayEventHandler {
                     ArmorIconColor secondHalfColor = icon.secondaryArmorIconColor;
 
                     GL11.glColor4f(firstHalfColor.Red, firstHalfColor.Green, firstHalfColor.Blue, firstHalfColor.Alpha);
-                    drawTexturedModalRect(xPosition, yPosition, 25, 9, 5, ARMOR_ICON_SIZE);
+                    this.drawTexturedModalRect(xPosition, yPosition, 25, 9, 5, ARMOR_ICON_SIZE);
 
                     GL11.glColor4f(
                             secondHalfColor.Red,
@@ -118,7 +103,7 @@ public class OverlayEventHandler {
                             secondHalfColor.Alpha);
                     if (currentArmorValue > 20) {
                         // Draw the second half as full as we have wrapped
-                        drawTexturedModalRect(
+                        this.drawTexturedModalRect(
                                 xPosition + 5,
                                 yPosition,
                                 39,
@@ -127,7 +112,7 @@ public class OverlayEventHandler {
                                 ARMOR_ICON_SIZE);
                     } else {
                         // Draw the second half as empty
-                        drawTexturedModalRect(
+                        this.drawTexturedModalRect(
                                 xPosition + 5,
                                 yPosition,
                                 30,
@@ -139,7 +124,7 @@ public class OverlayEventHandler {
                 case FULL:
                     ArmorIconColor fullColor = icon.primaryArmorIconColor;
                     GL11.glColor4f(fullColor.Red, fullColor.Green, fullColor.Blue, fullColor.Alpha);
-                    drawTexturedModalRect(xPosition, yPosition, 34, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
+                    this.drawTexturedModalRect(xPosition, yPosition, 34, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
                     break;
                 default:
                     break;
@@ -153,6 +138,7 @@ public class OverlayEventHandler {
 
     public void forceUpdate() {
         // Setting to unknown value will cause a refresh next render
-        INSTANCE.previousArmorValue = UNKNOWN_ARMOR_VALUE;
+        previousArmorValue = UNKNOWN_ARMOR_VALUE;
     }
+
 }
