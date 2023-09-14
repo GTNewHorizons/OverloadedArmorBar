@@ -1,7 +1,6 @@
 package locusway.overloadedarmorbar.client.gui;
 
-import static locusway.overloadedarmorbar.ConfigurationHandler.getConfig;
-
+import locusway.overloadedarmorbar.ConfigurationHandler;
 import locusway.overloadedarmorbar.OverloadedArmorBar;
 
 import net.minecraft.client.gui.GuiScreen;
@@ -15,11 +14,12 @@ public class ModGUIConfig extends GuiConfig {
     public ModGUIConfig(GuiScreen guiScreen) {
         super(
                 guiScreen,
-                new ConfigElement(getConfig().getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(),
+                new ConfigElement<>(ConfigurationHandler.getConfig().getCategory(Configuration.CATEGORY_GENERAL))
+                        .getChildElements(),
                 OverloadedArmorBar.MODID,
                 false,
                 false,
-                GuiConfig.getAbridgedConfigPath(getConfig().toString()));
+                GuiConfig.getAbridgedConfigPath(ConfigurationHandler.getConfig().toString()));
     }
 
 }

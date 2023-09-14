@@ -28,8 +28,8 @@ public class OverloadedArmorBar {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         proxy.registerEvents();
-        String configDir = event.getModConfigurationDirectory().toString();
-        ConfigurationHandler.init(configDir);
+        ConfigurationHandler.init(event.getSuggestedConfigurationFile());
         FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
     }
+
 }
