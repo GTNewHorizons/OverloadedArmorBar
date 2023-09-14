@@ -8,26 +8,29 @@ import java.util.regex.Pattern;
  */
 public class ArmorIconColor {
 
-    public float Red;
-    public float Blue;
-    public float Green;
-    public final float Alpha;
-    public static final Pattern pattern = Pattern.compile("^#[0-9A-Fa-f]{6}$");
+    private static final Pattern pattern = Pattern.compile("^#[0-9A-Fa-f]{6}$");
+
+    public float red;
+    public float blue;
+    public float green;
+    public final float alpha;
 
     public ArmorIconColor() {
-        Red = Blue = Green = Alpha = 1.0f;
+        red = blue = green = alpha = 1.0f;
     }
 
-    /*
-     * Convert from #RRGGBB format. If string is not in correct format this function will set the color to black.
+    /**
+     * Converts from #RRGGBB format. If string is not in correct format this function will set the color to white.
      */
     public void setColorFromHex(String colorHex) {
-        // Check the color hex is valid otherwise default to white
         Matcher matcher = pattern.matcher(colorHex);
         if (matcher.matches()) {
-            Red = Integer.valueOf(colorHex.substring(1, 3), 16).floatValue() / 255;
-            Green = Integer.valueOf(colorHex.substring(3, 5), 16).floatValue() / 255;
-            Blue = Integer.valueOf(colorHex.substring(5, 7), 16).floatValue() / 255;
+            final int color = Integer.parseInt(colorHex.substring(1, 7), 16);
+            red = (float) (color >> 16 & 0xFF) / 255F;
+            green = (float) (color >> 8 & 0xFF) / 255F;
+            blue = (float) (color & 0xFF) / 255F;
+        } else {
+            red = green = blue = 1F;
         }
     }
 }
