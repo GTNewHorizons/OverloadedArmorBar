@@ -19,8 +19,6 @@ public class OverloadedArmorBar {
     public static final String VERSION = "GRADLETOKEN_VERSION";
     public static final String GUI_FACTORY_CLASS = "locusway.overloadedarmorbar.client.gui.GuiFactory";
 
-    public static org.apache.logging.log4j.Logger logger;
-
     @SidedProxy(
             modId = MODID,
             clientSide = "locusway.overloadedarmorbar.proxy.ClientProxy",
@@ -29,7 +27,6 @@ public class OverloadedArmorBar {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        logger = event.getModLog();
         proxy.registerEvents();
         String configDir = event.getModConfigurationDirectory().toString();
         ConfigurationHandler.init(configDir);
