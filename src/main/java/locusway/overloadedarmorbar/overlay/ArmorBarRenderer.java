@@ -10,6 +10,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
+import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -33,16 +34,15 @@ public class ArmorBarRenderer extends Gui {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
     public void onRenderGameOverlayEvent(RenderGameOverlayEvent.Pre event) {
-        if (event.type != ARMOR) return;
-        renderArmorBar(event.resolution.getScaledWidth(), event.resolution.getScaledHeight());
-        event.setCanceled(true);
-    }
 
-    public void renderArmorBar(int screenWidth, int screenHeight) {
+        if (event.type != ARMOR) return;
+        mc.mcProfiler.startSection("armor");
+        GL11.glEnable(GL11.GL_BLEND);
+
         EntityPlayer player = mc.thePlayer;
-        int currentArmorValue = ForgeHooks.getTotalArmorValue(mc.thePlayer);
-        int xStart = screenWidth / 2 - 91;
-        int yStart = screenHeight - 39;
+        int currentArmorValue = ForgeHooks.getTotalArmorValue(player);
+        int xStart = event.resolution.getScaledWidth() / 2 - 91;
+        int yStart = event.resolution.getScaledHeight() - 39;
 
         IAttributeInstance playerHealthAttribute = player.getEntityAttribute(SharedMonsterAttributes.maxHealth);
         float playerHealth = (float) playerHealthAttribute.getAttributeValue();
@@ -66,10 +66,6 @@ public class ArmorBarRenderer extends Gui {
             // Save value for next cycle
             previousArmorValue = currentArmorValue;
         }
-
-        // Push to avoid lasting changes
-        GL11.glPushMatrix();
-        GL11.glEnable(3042);
 
         int armorIconCounter = 0;
         for (ArmorIcon icon : armorIcons) {
@@ -132,8 +128,12 @@ public class ArmorBarRenderer extends Gui {
             armorIconCounter++;
         }
         // Revert our state back
-        GL11.glColor4f(1, 1, 1, 1);
-        GL11.glPopMatrix();
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        GuiIngameForge.left_height += 10;
+        GL11.glDisable(GL11.GL_BLEND);
+        mc.mcProfiler.endSection();
+        event.setCanceled(true);
+
     }
 
     public void forceUpdate() {
