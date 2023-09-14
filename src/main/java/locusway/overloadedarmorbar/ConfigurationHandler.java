@@ -15,10 +15,9 @@ public class ConfigurationHandler {
     public static boolean alwaysShowArmorBar = false;
     public static boolean showEmptyArmorIcons = false;
 
-    public static void init(String configDir) {
+    public static void init(File configDir) {
         if (config == null) {
-            File path = new File(configDir + "/" + OverloadedArmorBar.MODID + ".cfg");
-            config = new Configuration(path);
+            config = new Configuration(configDir);
             loadConfiguration();
         }
     }
