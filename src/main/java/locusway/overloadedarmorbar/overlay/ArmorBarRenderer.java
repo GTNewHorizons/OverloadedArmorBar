@@ -55,7 +55,7 @@ public class ArmorBarRenderer extends Gui {
             switch (icon.armorIconType) {
                 case NONE:
                     ArmorIconColor color = icon.primaryArmorIconColor;
-                    GL11.glColor4f(color.Red, color.Green, color.Blue, color.Alpha);
+                    GL11.glColor4f(color.red, color.green, color.blue, color.alpha);
                     if (currentArmorValue > 20) {
                         // Draw the full icon as we have wrapped
                         this.drawTexturedModalRect(xPosition, top, 34, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
@@ -71,14 +71,14 @@ public class ArmorBarRenderer extends Gui {
                     ArmorIconColor firstHalfColor = icon.primaryArmorIconColor;
                     ArmorIconColor secondHalfColor = icon.secondaryArmorIconColor;
 
-                    GL11.glColor4f(firstHalfColor.Red, firstHalfColor.Green, firstHalfColor.Blue, firstHalfColor.Alpha);
+                    GL11.glColor4f(firstHalfColor.red, firstHalfColor.green, firstHalfColor.blue, firstHalfColor.alpha);
                     this.drawTexturedModalRect(xPosition, top, 25, 9, 5, ARMOR_ICON_SIZE);
 
                     GL11.glColor4f(
-                            secondHalfColor.Red,
-                            secondHalfColor.Green,
-                            secondHalfColor.Blue,
-                            secondHalfColor.Alpha);
+                            secondHalfColor.red,
+                            secondHalfColor.green,
+                            secondHalfColor.blue,
+                            secondHalfColor.alpha);
                     if (currentArmorValue > 20) {
                         // Draw the second half as full as we have wrapped
                         this.drawTexturedModalRect(
@@ -101,7 +101,7 @@ public class ArmorBarRenderer extends Gui {
                     break;
                 case FULL:
                     ArmorIconColor fullColor = icon.primaryArmorIconColor;
-                    GL11.glColor4f(fullColor.Red, fullColor.Green, fullColor.Blue, fullColor.Alpha);
+                    GL11.glColor4f(fullColor.red, fullColor.green, fullColor.blue, fullColor.alpha);
                     this.drawTexturedModalRect(xPosition, top, 34, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
                     break;
                 default:
