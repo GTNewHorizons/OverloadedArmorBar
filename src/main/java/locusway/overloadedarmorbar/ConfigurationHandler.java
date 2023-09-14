@@ -14,7 +14,6 @@ public class ConfigurationHandler {
             "#7F00FF" };
     public static boolean alwaysShowArmorBar = false;
     public static boolean showEmptyArmorIcons = false;
-    public static boolean offset = false;
 
     public static void init(String configDir) {
         if (config == null) {
@@ -32,11 +31,6 @@ public class ConfigurationHandler {
                 Configuration.CATEGORY_GENERAL,
                 new String[] { "#FFFFFF", "#FF5500", "#FFC747", "#27FFE3", "#00FF00", "#7F00FF" },
                 "Colors must be specified in #RRGGBB format");
-        offset = config.getBoolean(
-                "Override for Armor shift",
-                Configuration.CATEGORY_GENERAL,
-                false,
-                "Set to true if the armor bar display's incorrectly");
         showEmptyArmorIcons = config
                 .getBoolean("Show empty armor icons?", Configuration.CATEGORY_GENERAL, false, "Show empty armor icons");
 
