@@ -52,36 +52,27 @@ public class ArmorBarRenderer extends Gui {
         }
 
         int armorIconCounter = 0;
+        int colorState = 0xFFFFFF;
         for (ArmorIcon icon : armorIcons) {
-            int xPosition = left + armorIconCounter * 8;
+            final int xPosition = left + armorIconCounter * 8;
             armorIconCounter++;
             switch (icon.iconType) {
                 case EMPTY:
-                    ArmorIconColor color = icon.mainColor;
-                    GL11.glColor4f(color.red, color.green, color.blue, color.alpha);
                     if (currentArmorValue > 20) {
+                        colorState = setColor(icon.mainColor, colorState);
                         // Draw the full icon as we have wrapped
                         this.drawTexturedModalRect(xPosition, top, 34, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
-                    } else {
-                        if (ConfigurationHandler.showEmptyArmorIcons
-                                && (ConfigurationHandler.alwaysShowArmorBar || currentArmorValue > 0)) {
-                            // Draw the empty armor icon
-                            this.drawTexturedModalRect(xPosition, top, 16, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
-                        }
-                    }
+                    } else if (ConfigurationHandler.showEmptyArmorIcons
+                            && (ConfigurationHandler.alwaysShowArmorBar || currentArmorValue > 0)) {
+                                colorState = setColor(icon.mainColor, colorState);
+                                // Draw the empty armor icon
+                                this.drawTexturedModalRect(xPosition, top, 16, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
+                            }
                     break;
                 case HALF:
-                    ArmorIconColor firstHalfColor = icon.mainColor;
-                    ArmorIconColor secondHalfColor = icon.secondaryColor;
-
-                    GL11.glColor4f(firstHalfColor.red, firstHalfColor.green, firstHalfColor.blue, firstHalfColor.alpha);
+                    colorState = setColor(icon.mainColor, colorState);
                     this.drawTexturedModalRect(xPosition, top, 25, 9, 5, ARMOR_ICON_SIZE);
-
-                    GL11.glColor4f(
-                            secondHalfColor.red,
-                            secondHalfColor.green,
-                            secondHalfColor.blue,
-                            secondHalfColor.alpha);
+                    colorState = setColor(icon.secondaryColor, colorState);
                     if (currentArmorValue > 20) {
                         // Draw the second half as full as we have wrapped
                         this.drawTexturedModalRect(
@@ -103,21 +94,30 @@ public class ArmorBarRenderer extends Gui {
                     }
                     break;
                 case FULL:
-                    ArmorIconColor fullColor = icon.mainColor;
-                    GL11.glColor4f(fullColor.red, fullColor.green, fullColor.blue, fullColor.alpha);
+                    colorState = setColor(icon.mainColor, colorState);
                     this.drawTexturedModalRect(xPosition, top, 34, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
                     break;
                 default:
                     break;
             }
         }
-        // Revert our state back
-        GL11.glColor4f(1F, 1F, 1F, 1F);
+        if (colorState != 0xFFFFFF) {
+            GL11.glColor4f(1F, 1F, 1F, 1F);
+        }
         GuiIngameForge.left_height += 10;
         GL11.glDisable(GL11.GL_BLEND);
         mc.mcProfiler.endSection();
         event.setCanceled(true);
 
+    }
+
+    private static int setColor(int color, int colorState) {
+        if (colorState == color) return colorState;
+        final float red = (float) (color >> 16 & 0xFF) / 255F;
+        final float green = (float) (color >> 8 & 0xFF) / 255F;
+        final float blue = (float) (color & 0xFF) / 255F;
+        GL11.glColor4f(red, green, blue, 1F);
+        return color;
     }
 
     private static ArmorIcon[] calculateArmorIcons(int armorPoints) {
@@ -138,7 +138,7 @@ public class ArmorBarRenderer extends Gui {
 
         for (int i = 0; i < 10; i++) {
             armorIcons[i] = new ArmorIcon();
-            setArmorIconColor(armorIcons[i], ConfigurationHandler.colorValues, scale, counter);
+            setArmorIconColor(armorIcons[i], scale, counter);
             if (counter >= 2) {
                 // We have at least a full icon to show
                 armorIcons[i].iconType = ArmorIcon.Type.FULL;
@@ -157,16 +157,18 @@ public class ArmorBarRenderer extends Gui {
 
     }
 
-    private static void setArmorIconColor(ArmorIcon icon, String[] colors, int scale, int armorValue) {
+    private static void setArmorIconColor(ArmorIcon icon, int scale, int armorValue) {
+
         int currentScale = scale;
         int previousScale = scale - 1;
+        final int colorsLength = ConfigurationHandler.colorValuesI.length;
 
         // Force last color if we have run out of colors on the list
-        if (currentScale > colors.length - 1) {
-            currentScale = colors.length - 1;
+        if (currentScale > colorsLength - 1) {
+            currentScale = colorsLength - 1;
         }
-        if (previousScale > colors.length - 1) {
-            previousScale = colors.length - 1;
+        if (previousScale > colorsLength - 1) {
+            previousScale = colorsLength - 1;
         }
 
         // Previous scale is -1 between 0 and 20 points of armor, so reset to 0 for sane value
@@ -177,18 +179,18 @@ public class ArmorBarRenderer extends Gui {
         // Covers 2 (FULL) and 1 (HALF) - Primary Color
         if (armorValue >= 1) {
             // Should be current tier color
-            icon.mainColor.setColorFromHex(colors[currentScale]);
+            icon.mainColor = ConfigurationHandler.colorValuesI[currentScale];
         }
 
         // Covers 1 (HALF) - Secondary Color
         if (armorValue == 1) {
-            // Should be previous tier color
-            icon.secondaryColor.setColorFromHex(colors[previousScale]);
+            // Only right side of icon should be previous tier color
+            icon.secondaryColor = ConfigurationHandler.colorValuesI[previousScale];
         }
 
         if (armorValue == 0) {
-            // Should be previous tier color
-            icon.mainColor.setColorFromHex(colors[previousScale]);
+            // All icon should be previous tier color
+            icon.mainColor = ConfigurationHandler.colorValuesI[previousScale];
         }
     }
 
@@ -196,14 +198,12 @@ public class ArmorBarRenderer extends Gui {
 
         public Type iconType;
         /** The main color of the icon */
-        public final ArmorIconColor mainColor;
+        public int mainColor = 0xFFFFFF;
         /** When of Type = HALF, this is the color of the right-hand side of the icon */
-        public final ArmorIconColor secondaryColor;
+        public int secondaryColor = 0xFFFFFF;
 
         public ArmorIcon() {
             iconType = Type.EMPTY;
-            mainColor = new ArmorIconColor();
-            secondaryColor = new ArmorIconColor();
         }
 
         /** The type of armor icon to render */
