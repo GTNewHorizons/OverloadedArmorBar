@@ -119,8 +119,8 @@ public class ArmorBarRenderer extends Gui {
             } else {
                 if (armorPoints > 20) {
                     armorIcons[i].iconType = ArmorIcon.Type.FULL;
-                } else if (ConfigurationHandler.showEmptyArmorIcons
-                        && (ConfigurationHandler.alwaysShowArmorBar || armorPoints > 0)) {
+                } else if (ConfigurationHandler.showEmptyArmorIcons && armorPoints > 0
+                        || ConfigurationHandler.alwaysShowArmorBar) {
                             armorIcons[i].iconType = ArmorIcon.Type.EMPTY;
                         } else {
                             armorIcons[i].iconType = ArmorIcon.Type.NONE;
