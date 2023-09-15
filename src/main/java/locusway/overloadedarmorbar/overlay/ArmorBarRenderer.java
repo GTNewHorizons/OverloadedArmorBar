@@ -20,13 +20,12 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
  */
 public class ArmorBarRenderer extends Gui {
 
-    private final static int UNKNOWN_ARMOR_VALUE = -1;
-    private final static int ARMOR_ICON_SIZE = 9;
-    private final static int ARMOR_SECOND_HALF_ICON_SIZE = 4;
-
-    private static int previousArmorValue = UNKNOWN_ARMOR_VALUE;
+    private static final int UNKNOWN_ARMOR_VALUE = -1;
+    private static final int ARMOR_ICON_SIZE = 9;
+    private static final int ARMOR_SECOND_HALF_ICON_SIZE = 4;
+    private static final ArmorIcon[] armorIcons = new ArmorIcon[10];
     private static final Minecraft mc = Minecraft.getMinecraft();
-    private static ArmorIcon[] armorIcons;
+    private static int previousArmorValue = UNKNOWN_ARMOR_VALUE;
 
     public static void forceUpdate() {
         previousArmorValue = UNKNOWN_ARMOR_VALUE;
@@ -47,15 +46,14 @@ public class ArmorBarRenderer extends Gui {
 
         // Save some CPU cycles by caching the armor bars to render
         if (currentArmorValue != previousArmorValue) {
-            armorIcons = calculateArmorIcons(currentArmorValue);
+            updateArmorIcons(currentArmorValue);
             previousArmorValue = currentArmorValue;
         }
 
-        int armorIconCounter = 0;
         int colorState = 0xFFFFFF;
-        for (ArmorIcon icon : armorIcons) {
-            final int xPosition = left + armorIconCounter * 8;
-            armorIconCounter++;
+        for (int i = 0; i < armorIcons.length; i++) {
+            final ArmorIcon icon = armorIcons[i];
+            final int xPosition = left + i * 8;
             switch (icon.iconType) {
                 case EMPTY:
                     if (currentArmorValue > 20) {
@@ -120,77 +118,29 @@ public class ArmorBarRenderer extends Gui {
         return color;
     }
 
-    private static ArmorIcon[] calculateArmorIcons(int armorPoints) {
-        ArmorIcon[] armorIcons = new ArmorIcon[10];
-
+    private static void updateArmorIcons(int armorPoints) {
         // Calculate which color scale to use
         int scale = armorPoints / 20;
-
         // Scale the value down for each position
         int counter = armorPoints - (scale * 20);
-
         // Handle exact wrap around situation
         if (scale > 0 && counter == 0) {
             // Show we are maxed out at previous scale
             scale -= 1;
             counter = 20;
         }
-
-        for (int i = 0; i < 10; i++) {
-            armorIcons[i] = new ArmorIcon();
-            setArmorIconColor(armorIcons[i], scale, counter);
+        for (int i = 0; i < armorIcons.length; i++) {
+            if (armorIcons[i] == null) armorIcons[i] = new ArmorIcon();
+            armorIcons[i].updateColors(scale, counter);
             if (counter >= 2) {
-                // We have at least a full icon to show
                 armorIcons[i].iconType = ArmorIcon.Type.FULL;
                 counter -= 2;
             } else if (counter == 1) {
-                // We have a half icon to show
                 armorIcons[i].iconType = ArmorIcon.Type.HALF;
                 counter -= 1;
             } else {
-                // Empty icon
                 armorIcons[i].iconType = ArmorIcon.Type.EMPTY;
             }
-        }
-
-        return armorIcons;
-
-    }
-
-    private static void setArmorIconColor(ArmorIcon icon, int scale, int armorValue) {
-
-        int currentScale = scale;
-        int previousScale = scale - 1;
-        final int colorsLength = ConfigurationHandler.colorValuesI.length;
-
-        // Force last color if we have run out of colors on the list
-        if (currentScale > colorsLength - 1) {
-            currentScale = colorsLength - 1;
-        }
-        if (previousScale > colorsLength - 1) {
-            previousScale = colorsLength - 1;
-        }
-
-        // Previous scale is -1 between 0 and 20 points of armor, so reset to 0 for sane value
-        if (previousScale < 0) {
-            previousScale = 0;
-        }
-
-        // Covers 2 (FULL) and 1 (HALF) - Primary Color
-        if (armorValue >= 1) {
-            // Should be current tier color
-            icon.mainColor = ConfigurationHandler.colorValuesI[currentScale];
-        }
-
-        // Covers 1 (HALF) - Secondary Color
-        if (armorValue == 1) {
-            // Only right side of icon should be previous tier color
-            icon.secondaryColor = ConfigurationHandler.colorValuesI[previousScale];
-        }
-
-        if (armorValue == 0) {
-            // All icon should be previous tier color
-            icon.mainColor = ConfigurationHandler.colorValuesI[previousScale];
         }
     }
 
@@ -202,15 +152,35 @@ public class ArmorBarRenderer extends Gui {
         /** When of Type = HALF, this is the color of the right-hand side of the icon */
         public int secondaryColor = 0xFFFFFF;
 
-        public ArmorIcon() {
-            iconType = Type.EMPTY;
+        public void updateColors(int scale, int armorValue) {
+            int currentScale = scale;
+            int previousScale = scale - 1;
+            // Prevent array out of bounds exception
+            final int arrayLength = ConfigurationHandler.colorValuesI.length;
+            currentScale = Math.min(arrayLength - 1, currentScale);
+            previousScale = Math.min(arrayLength - 1, previousScale);
+            previousScale = Math.max(0, previousScale);
+            // Covers 2 (FULL) and 1 (HALF) - Primary Color
+            if (armorValue >= 1) {
+                // Icon should be of current tier color
+                this.mainColor = ConfigurationHandler.colorValuesI[currentScale];
+            }
+            // Covers 1 (HALF) - Secondary Color
+            if (armorValue == 1) {
+                // Only right side of icon should be of previous tier color
+                this.secondaryColor = ConfigurationHandler.colorValuesI[previousScale];
+            }
+            if (armorValue == 0) {
+                // Icon should be of previous tier color
+                this.mainColor = ConfigurationHandler.colorValuesI[previousScale];
+            }
         }
 
         /** The type of armor icon to render */
         public enum Type {
             EMPTY,
-            HALF,
-            FULL
+            FULL,
+            HALF
         }
 
     }
