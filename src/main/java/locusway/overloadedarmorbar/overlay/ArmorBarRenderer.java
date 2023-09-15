@@ -22,7 +22,8 @@ public class ArmorBarRenderer extends Gui {
 
     private static final int UNKNOWN_ARMOR_VALUE = -1;
     private static final int ARMOR_ICON_SIZE = 9;
-    private static final int ARMOR_SECOND_HALF_ICON_SIZE = 4;
+    private static final int ARMOR_FIRST_HALF_WIDTH = 5;
+    private static final int ARMOR_SECOND_HALF_WIDTH = 4;
     private static final ArmorIcon[] armorIcons = new ArmorIcon[10];
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static int previousArmorValue = UNKNOWN_ARMOR_VALUE;
@@ -56,45 +57,22 @@ public class ArmorBarRenderer extends Gui {
             final int xPosition = left + i * 8;
             switch (icon.iconType) {
                 case EMPTY:
-                    if (currentArmorValue > 20) {
-                        colorState = setColor(icon.mainColor, colorState);
-                        // Draw the full icon as we have wrapped
-                        this.drawTexturedModalRect(xPosition, top, 34, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
-                    } else if (ConfigurationHandler.showEmptyArmorIcons
-                            && (ConfigurationHandler.alwaysShowArmorBar || currentArmorValue > 0)) {
-                                colorState = setColor(icon.mainColor, colorState);
-                                // Draw the empty armor icon
-                                this.drawTexturedModalRect(xPosition, top, 16, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
-                            }
-                    break;
-                case HALF:
                     colorState = setColor(icon.mainColor, colorState);
-                    this.drawTexturedModalRect(xPosition, top, 25, 9, 5, ARMOR_ICON_SIZE);
-                    colorState = setColor(icon.secondaryColor, colorState);
-                    if (currentArmorValue > 20) {
-                        // Draw the second half as full as we have wrapped
-                        this.drawTexturedModalRect(
-                                xPosition + 5,
-                                top,
-                                39,
-                                9,
-                                ARMOR_SECOND_HALF_ICON_SIZE,
-                                ARMOR_ICON_SIZE);
-                    } else {
-                        // Draw the second half as empty
-                        this.drawTexturedModalRect(
-                                xPosition + 5,
-                                top,
-                                30,
-                                9,
-                                ARMOR_SECOND_HALF_ICON_SIZE,
-                                ARMOR_ICON_SIZE);
-                    }
+                    drawTexturedModalRect(xPosition, top, 16, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
                     break;
                 case FULL:
                     colorState = setColor(icon.mainColor, colorState);
-                    this.drawTexturedModalRect(xPosition, top, 34, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
+                    drawTexturedModalRect(xPosition, top, 34, 9, ARMOR_ICON_SIZE, ARMOR_ICON_SIZE);
                     break;
+                case HALF:
+                    colorState = setColor(icon.mainColor, colorState);
+                    drawTexturedModalRect(xPosition, top, 25, 9, ARMOR_FIRST_HALF_WIDTH, ARMOR_ICON_SIZE);
+                    colorState = setColor(icon.secondaryColor, colorState);
+                    // Draw the second half as full if the player has more than one bar of armor, empty otherwise
+                    final int textureX = currentArmorValue > 20 ? 39 : 30;
+                    drawTexturedModalRect(xPosition + 5, top, textureX, 9, ARMOR_SECOND_HALF_WIDTH, ARMOR_ICON_SIZE);
+                    break;
+                case NONE:
                 default:
                     break;
             }
@@ -139,7 +117,14 @@ public class ArmorBarRenderer extends Gui {
                 armorIcons[i].iconType = ArmorIcon.Type.HALF;
                 counter -= 1;
             } else {
-                armorIcons[i].iconType = ArmorIcon.Type.EMPTY;
+                if (armorPoints > 20) {
+                    armorIcons[i].iconType = ArmorIcon.Type.FULL;
+                } else if (ConfigurationHandler.showEmptyArmorIcons
+                        && (ConfigurationHandler.alwaysShowArmorBar || armorPoints > 0)) {
+                            armorIcons[i].iconType = ArmorIcon.Type.EMPTY;
+                        } else {
+                            armorIcons[i].iconType = ArmorIcon.Type.NONE;
+                        }
             }
         }
     }
@@ -180,7 +165,8 @@ public class ArmorBarRenderer extends Gui {
         public enum Type {
             EMPTY,
             FULL,
-            HALF
+            HALF,
+            NONE
         }
 
     }
