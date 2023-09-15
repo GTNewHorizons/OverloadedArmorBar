@@ -2,6 +2,8 @@ package locusway.overloadedarmorbar;
 
 import java.io.File;
 
+import locusway.overloadedarmorbar.overlay.ArmorBarRenderer;
+
 import net.minecraftforge.common.config.Configuration;
 
 import cpw.mods.fml.client.event.ConfigChangedEvent;
@@ -33,7 +35,10 @@ public class ConfigurationHandler {
         showEmptyArmorIcons = config
                 .getBoolean("Show empty armor icons?", Configuration.CATEGORY_GENERAL, false, "Show empty armor icons");
 
-        if (config.hasChanged()) config.save();
+        if (config.hasChanged()) {
+            config.save();
+            ArmorBarRenderer.forceUpdate();
+        }
     }
 
     @SubscribeEvent
