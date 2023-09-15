@@ -1,10 +1,13 @@
 package locusway.overloadedarmorbar;
 
-import locusway.overloadedarmorbar.proxy.CommonProxy;
+import locusway.overloadedarmorbar.overlay.ArmorBarRenderer;
+
+import net.minecraftforge.common.MinecraftForge;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.relauncher.Side;
 
 @Mod(
         modid = OverloadedArmorBar.MODID,
@@ -19,17 +22,12 @@ public class OverloadedArmorBar {
     public static final String VERSION = "GRADLETOKEN_VERSION";
     public static final String GUI_FACTORY_CLASS = "locusway.overloadedarmorbar.client.gui.GuiFactory";
 
-    @SidedProxy(
-            modId = MODID,
-            clientSide = "locusway.overloadedarmorbar.proxy.ClientProxy",
-            serverSide = "locusway.overloadedarmorbar.proxy.CommonProxy")
-    public static CommonProxy proxy;
-
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        proxy.registerEvents();
-        ConfigurationHandler.init(event.getSuggestedConfigurationFile());
-        FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
+        if (event.getSide() == Side.CLIENT) {
+            MinecraftForge.EVENT_BUS.register(new ArmorBarRenderer());
+            FMLCommonHandler.instance().bus().register(new ConfigurationHandler(event.getSuggestedConfigurationFile()));
+        }
     }
 
 }
