@@ -15,7 +15,7 @@ public class ConfigurationHandler {
     public static boolean alwaysShowArmorBar = false;
     public static boolean showEmptyArmorIcons = false;
 
-    public static void init(File configDir) {
+    public ConfigurationHandler(File configDir) {
         if (config == null) {
             config = new Configuration(configDir);
             loadConfiguration();
