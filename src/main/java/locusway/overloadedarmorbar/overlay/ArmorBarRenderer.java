@@ -2,8 +2,6 @@ package locusway.overloadedarmorbar.overlay;
 
 import static net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType.ARMOR;
 
-import locusway.overloadedarmorbar.ConfigurationHandler;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraftforge.client.GuiIngameForge;
@@ -14,6 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import locusway.overloadedarmorbar.ConfigurationHandler;
 
 /**
  * Class which handles the render event and hides the vanilla armor bar

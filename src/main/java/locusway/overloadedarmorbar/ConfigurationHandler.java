@@ -4,12 +4,11 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import locusway.overloadedarmorbar.overlay.ArmorBarRenderer;
-
 import net.minecraftforge.common.config.Configuration;
 
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import locusway.overloadedarmorbar.overlay.ArmorBarRenderer;
 
 public class ConfigurationHandler {
 

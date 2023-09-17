@@ -1,13 +1,12 @@
 package locusway.overloadedarmorbar;
 
-import locusway.overloadedarmorbar.overlay.ArmorBarRenderer;
-
 import net.minecraftforge.common.MinecraftForge;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.relauncher.Side;
+import locusway.overloadedarmorbar.overlay.ArmorBarRenderer;
 
 @Mod(
         modid = OverloadedArmorBar.MODID,
