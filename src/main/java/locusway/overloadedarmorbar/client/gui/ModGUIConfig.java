@@ -1,13 +1,12 @@
 package locusway.overloadedarmorbar.client.gui;
 
-import locusway.overloadedarmorbar.ConfigurationHandler;
-import locusway.overloadedarmorbar.OverloadedArmorBar;
-
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 
 import cpw.mods.fml.client.config.GuiConfig;
+import locusway.overloadedarmorbar.ConfigurationHandler;
+import locusway.overloadedarmorbar.OverloadedArmorBar;
 
 public class ModGUIConfig extends GuiConfig {
 
