@@ -32,7 +32,7 @@ public class ArmorBarRenderer extends Gui {
         previousArmorValue = UNKNOWN_ARMOR_VALUE;
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onRenderGameOverlayEvent(RenderGameOverlayEvent.Pre event) {
 
         if (event.type != ARMOR) return;
