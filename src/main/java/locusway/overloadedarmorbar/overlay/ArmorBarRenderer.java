@@ -31,7 +31,8 @@ public class ArmorBarRenderer extends Gui {
         previousArmorValue = UNKNOWN_ARMOR_VALUE;
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    // HIGH, so mods that move or hide the armor bar at HIGHEST run first
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void onRenderGameOverlayEvent(RenderGameOverlayEvent.Pre event) {
 
         if (event.type != ARMOR) return;
